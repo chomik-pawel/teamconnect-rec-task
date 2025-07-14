@@ -6,7 +6,7 @@ use TeamConnect\Shared\Money;
 
 class BankAccount
 {
-    private const float TRANSACTIONAL_FEE_PERCENTAGE = 0.05;
+    private const float TRANSACTIONAL_FEE_PERCENTAGE = 1.05;
 
     private int $id;
     private Money $balance;
@@ -34,10 +34,16 @@ class BankAccount
 
     public function debit(Money $debitMoney): Payment
     {
-        $transactionalFee = $debitMoney->getAmount() * (1 + self::TRANSACTIONAL_FEE_PERCENTAGE);
+        $transactionalFee = $debitMoney->getAmount() * self::TRANSACTIONAL_FEE_PERCENTAGE;
 
         $debitAmount = Money::create($transactionalFee, $debitMoney->getCurrency());
-        $this->balance = $this->balance->subtract($debitAmount);
+        $subtractedBalance = $this->balance->subtract($debitAmount);
+
+        if ($subtractedBalance->getAmount() < 0) {
+            throw new InsufficientFundsException('Insufficient funds');
+        }
+
+        $this->balance = $subtractedBalance;
 
         return new Payment(random_int(1, 50), $debitAmount);
     }

@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Banking;
+namespace TeamConnect\Banking;
 
-class InsufficientFundsException
+use DomainException;
+
+class InsufficientFundsException extends DomainException
 {
-
 }
