@@ -31,4 +31,13 @@ class Money
     {
         return $this->currency;
     }
+
+    public function add(Money $addMoney): Money
+    {
+        if ($this->currency !== $addMoney->currency) {
+            throw new DifferentCurrencyException('Currencies must be the same');
+        }
+
+        return Money::create($this->amount + $addMoney->getAmount(), $this->currency);
+    }
 }
