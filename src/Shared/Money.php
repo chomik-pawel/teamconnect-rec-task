@@ -40,4 +40,13 @@ class Money
 
         return Money::create($this->amount + $addMoney->getAmount(), $this->currency);
     }
+
+    public function subtract(Money $subtractMoney): Money
+    {
+        if ($this->currency !== $subtractMoney->currency) {
+            throw new DifferentCurrencyException('Currencies must be the same');
+        }
+
+        return Money::create($this->amount - $subtractMoney->getAmount(), $this->currency);
+    }
 }
