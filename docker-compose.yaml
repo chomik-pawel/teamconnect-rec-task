@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  php:
+    image: php:8.4-fpm
+    container_name: team-connect-php
+    volumes:
+      - ./:/var/www/html
+    restart: unless-stopped
+    working_dir: /var/www/html
