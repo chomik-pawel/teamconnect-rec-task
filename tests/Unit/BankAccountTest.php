@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Codeception\Test\Unit;
+use TeamConnect\Banking\DebitOperationsLimitExceededException;
 use TeamConnect\Banking\Payment;
 use TeamConnect\Shared\DifferentCurrencyException;
 use TeamConnect\Banking\InsufficientFundsException;
@@ -84,6 +85,23 @@ class BankAccountTest extends Unit
         // Act
         $debitAmountValue = 10000;
         $debitAmount = Money::create($debitAmountValue, CurrencyEnum::Pln);
+        $sut->debit($debitAmount);
+    }
+
+    public function testExpectDebitOperationsLimitExceededException(): void
+    {
+        // Arrange
+        $sut = new BankAccount(1, Money::create(20000, CurrencyEnum::Pln));
+
+        // Assert
+        $this->expectException(DebitOperationsLimitExceededException::class);
+
+        // Act
+        $debitAmountValue = 2000;
+        $debitAmount = Money::create($debitAmountValue, CurrencyEnum::Pln);
+        $sut->debit($debitAmount);
+        $sut->debit($debitAmount);
+        $sut->debit($debitAmount);
         $sut->debit($debitAmount);
     }
 }
